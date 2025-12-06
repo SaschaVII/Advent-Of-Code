@@ -39,13 +39,17 @@ def remove_zeros(ranges: list[tuple[int, int]]):
 # mashes ranges and returns a new copy of mashed ranges
 def mash_ranges(ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
     first_run = True
+
     while remove_zeros(ranges) > 0 or first_run:
         first_run = False
         for i in range(len(ranges)):
             current = ranges[i]
             current_lower, current_upper = current
 
-            for j in range(i + 1, len(ranges)):
+            for j in range(len(ranges)):
+                if i == j:
+                    continue
+
                 other_range = ranges[j]
                 other_lower, other_upper = other_range
                 # range fits entirely within another range appearing later
@@ -54,7 +58,7 @@ def mash_ranges(ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
                     break
 
                 # lower intersection
-                if current_lower <= other_lower and current_upper <= other_upper and current_upper <= other_lower:
+                if current_lower <= other_lower and current_upper <= other_upper and current_upper >= other_lower:
                     ranges[j] = (current_lower, other_upper)
                     ranges[i] = (0, 0)
                     break
