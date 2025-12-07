@@ -11,7 +11,7 @@ def get_lines() -> list[str]:
     return content.split("\n")
 
 
-def day_1():
+def part_1():
     layers = get_lines()
     split_count = 0
     beam_locations: set[int] = {layers[0].find("S")}
@@ -26,7 +26,7 @@ def day_1():
         beam_locations = new_beam_locations
     print(f"Day 1 result: {split_count}")
 
-def day_2():
+def part_2():
     layers = get_lines()
     memo:dict[tuple[int, int], int] = {(0,0): 0}
 
@@ -53,8 +53,8 @@ def day_2():
 
 
 def main():
-    day_1()
-    day_2()
+    part_1()
+    part_2()
 
 
 if __name__ == "__main__":
