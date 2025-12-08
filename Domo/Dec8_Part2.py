@@ -14,7 +14,7 @@ def insertIntoShortest(shortest_connections, new_connection, distance, max_conne
         if shortest_connections[i][2] > distance:
             shortest_connections.insert(i, [new_connection[0],new_connection[1],distance])
             break
-            print("shortest connections insert")
+
     if len(shortest_connections)> max_connections:
         shortest_connections.pop(-1)
 
@@ -39,25 +39,6 @@ def getNewConnections(coordinates, max_connections = 1000):
         connection.pop(2)
     return shortest_connections
 
-def getNewConnection(coordinates, connections):
-    smallest_coord = [0.0,0,0] #dist,i, j
-    for i in range(len(coordinates)):
-        for j in range(len(coordinates)):
-            if i == j:
-                continue
-
-            next_pair = False
-            if [i,j] in connections:
-                continue
-            if [j,i] in connections:
-                continue
-            
-            distance = getDistance(coordinates[i],coordinates[j])
-            if distance < smallest_coord[0] or smallest_coord == [0,0,0]:
-                smallest_coord[0] = distance
-                smallest_coord[1] = i
-                smallest_coord[2] = j
-    return [smallest_coord[1],smallest_coord[2]]
 
 def insertIntoConnections(new_connection, connections):
     i = 0
@@ -65,8 +46,8 @@ def insertIntoConnections(new_connection, connections):
         
         #Option 1: Those two are already connected
         if new_connection[0] in connection and new_connection[1] in connection:
-            print("already in connection: ", i, "connection: ", new_connection)
-            return
+            #print("already in connection: ", i, "connection: ", new_connection)
+            return False
 
 
         #Option 2: Only first node in a connection
@@ -78,13 +59,13 @@ def insertIntoConnections(new_connection, connections):
                     elements = connections.pop(j)
                     for element in elements:
                         connections[i].append(element)
-                    print("combine: ", i,j ,"connection: ", new_connection)
-                    return
+                    #print("combine: ", i,j ,"connection: ", new_connection)
+                    return True
                 j+=1
             #else
-            print("append ", i, "connection: ", new_connection)
+            #print("append ", i, "connection: ", new_connection)
             connections[i].append(new_connection[1])
-            return
+            return True
 
 
         #Option 3. Only seconds node in a connection
@@ -100,19 +81,20 @@ def insertIntoConnections(new_connection, connections):
 
 
 
-                    print("combine: ", i,j ,"connection: ", new_connection)
-                    return
+                    #print("combine: ", i,j ,"connection: ", new_connection)
+                    return True
                 j+=1
             #else
-            print("append ", i, "connection: ", new_connection)
+            #print("append ", i, "connection: ", new_connection)
             connections[i].append(new_connection[0])
-            return
+            return True
         
         i+= 1
 
     #Option 5, neither part of connections
    
     connections.append(new_connection)
+    return True
     print("new connection: ", new_connection)
     
 
@@ -141,27 +123,22 @@ if __name__ == '__main__':
     #     raw_connections.append(getNewConnection(coordinates, raw_connections))
     #     print("connection number: ", i)
         
-    raw_connections = getNewConnections(coordinates, 1000)
+    raw_connections = getNewConnections(coordinates, 10000)
         
     print(raw_connections)
     i= 0
     for connection in raw_connections:
-        insertIntoConnections(connection,connections)
-        print(i,"  connections:  ",connections)
+        len_before_insert = len(connections)
+        if insertIntoConnections(connection,connections):
+            print("last insert: ",connection)
+            first_x = coordinates[connection[0]][0]
+            second_x = coordinates[connection[1]][0]
+            print("len connections: ", len(connections))
+            print("product: ", first_x*second_x)
+        #print(i,"  connections:  ",connections)
         i+= 1
+        len_after_insert = len(connections)
+        
 
-    first = 0
-    second = 0
-    third = 0
-    for connection in connections:
-        if len(connection)>first:
-            third = second
-            second = first
-            first =len(connection)
-        elif len(connection)>second:
-            third = second
-            second =len(connection)
-        elif len(connection) > third:
-            third = len(connection)
-    print(first*second*third)
+
             
