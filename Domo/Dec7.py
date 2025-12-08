@@ -39,7 +39,6 @@ if __name__ == '__main__':
     splits_total = 0
     for row in range(1,len(integer_map)):
         for col in range (len(integer_map[0])-1):
-            print ("Row: ", row, "Column: ", col)
             char_on_top = integer_map[row-1][col]
             char_left = integer_map[row][col-1]
             char_right = integer_map[row][col+1]
@@ -49,13 +48,13 @@ if __name__ == '__main__':
 
             if char_on_top != BEAM and char_on_top != STARTING_POINT:
                 continue
-            if char_current == EMPTY_SPACE:
+            if char_current != SPLITTER:
                 integer_map[row][col] = BEAM
 
                 if char_on_top == STARTING_POINT:
                     beam_strength_map[row][col] = 1
                 else:    
-                    beam_strength_map[row][col] = beam_strength_top
+                    beam_strength_map[row][col] += beam_strength_top
                 
                 continue
             if char_current == SPLITTER:
@@ -69,10 +68,5 @@ if __name__ == '__main__':
     
     print (integer_map)
     print("splits total ", splits_total)
-    print (beam_strength_map)
+    print (beam_strength_map[:-1])
     print("total Beams:",sum(beam_strength_map[len(integer_map)-2]))
-            
-    
-
-
-    
