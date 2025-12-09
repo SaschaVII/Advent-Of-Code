@@ -1,10 +1,5 @@
 import numpy as np
 
-import sys
-sys.setrecursionlimit(200000000)
-
-
-
 NO_TILE = 0
 RED_TILE = 1
 GREEN_TILE = 2
@@ -18,41 +13,6 @@ def checkIfRectangleGreen(tiles_map, corner1, corner2):
     row_increment = 1 if row2 > row1 else -1
     col_increment = 1 if col2 > col1 else -1
 
-
-    # #left col
-    # if GREEN_TILE in tiles_map[row1+row_increment:row2-row_increment,col1+col_increment]:
-    #     return True
-    
-    # #right col
-    # if GREEN_TILE in tiles_map[row1+row_increment:row2-row_increment,col2-col_increment]:
-    #     return True
-    
-    # #top row
-    # if GREEN_TILE in tiles_map[row1+row_increment,col1+col_increment:col2 - col_increment]:
-    #     return True
-    
-    # #bottom row
-    # if GREEN_TILE in tiles_map[row2-row_increment,col1+col_increment:col2 - col_increment]:
-    #     return True
-    
-
-    #     #left col
-    # if RED_TILE in tiles_map[row1+row_increment:row2-row_increment,col1+col_increment]:
-    #     return True
-    
-    # #right col
-    # if RED_TILE in tiles_map[row1+row_increment:row2-row_increment,col2-col_increment]:
-    #     return True
-    
-    # #top row
-    # if RED_TILE in tiles_map[row1+row_increment,col1+col_increment:col2 - col_increment]:
-    #     return True
-    
-    # #bottom row
-    # if RED_TILE in tiles_map[row2-row_increment,col1+col_increment:col2 - col_increment]:
-    #     return True
-    
-    #bot
 
     #left and right col
     for r in range(row1+row_increment, row2, row_increment):
@@ -90,40 +50,6 @@ def colorEdgesGreen(tiles_map, red_tiles):
             for j in range (x+increment, prev_x, increment):
                 tiles_map[y][j] = GREEN_TILE
 
-def fillGreen(tiles_map, start_point, colored_green = 0):
-
-    queue = [start_point]
-    colored_green +=1
-
-
-    while queue != None:
-        if not colored_green%1000000:
-            print(colored_green)
-        colored_green +=1
-
-        current = queue.pop(0)
-        row = current[0]
-        column = current[1]
-        tiles_map[row][column] = GREEN_TILE
-        #tile to the top
-        if tiles_map [row -1][column] != GREEN_TILE and tiles_map [row-1][column] != RED_TILE:
-            
-            queue.append([row -1, column])
-        
-        #tile to the bottom
-        if tiles_map [row + 1][column] != GREEN_TILE and tiles_map [row +1 ][column] != RED_TILE:
-            queue.append([row +1, column])
-        
-        #tile to the left
-        if tiles_map [row][column-1] != GREEN_TILE and tiles_map [row][column-1] != RED_TILE:
-            queue.append([row, column -1])
-        
-        #tile to the right
-        if tiles_map [row][column+1] != GREEN_TILE and tiles_map [row][column+1] != RED_TILE:
-            queue.append([row, column+1])
-    
-
-
 
 if __name__ == '__main__':
 
@@ -145,7 +71,7 @@ if __name__ == '__main__':
 
             print(single_coordinate)
             tiles_map[single_coordinate[1]][single_coordinate[0]] = RED_TILE
-    print(tiles_map)
+
     #part 1
     largest_area = 0
     for i in range(len(red_tiles)):
@@ -159,31 +85,15 @@ if __name__ == '__main__':
 
     #part 2
     largest_only_green = 0
-    checking = 0
     colorEdgesGreen(tiles_map, red_tiles)
-
-    
  
-    #fillGreen(tiles_map, [50000,50000])
     for i in range(len(red_tiles)):
-        print("i: ", i, "len i: ", range(len(red_tiles)))
-        print("current largest ", largest_only_green)
         for j in range(len(red_tiles)):
             if i>= j:
                 continue
-
             
             area = getRectangleSize(red_tiles[i], red_tiles[j])
-
-            if area > largest_only_green:
-                 #print("checking: ", checking)
-                 checking += 1
-                 if not checkIfRectangleGreen(tiles_map,red_tiles[i], red_tiles[j]):
-                    largest_only_green = area
+            if area > largest_only_green and not checkIfRectangleGreen(tiles_map,red_tiles[i], red_tiles[j]):               
+                largest_only_green = area
     
-                
-
-
     print("part 2: ", largest_only_green)
-
-
