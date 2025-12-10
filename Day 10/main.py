@@ -4,8 +4,8 @@ import pathlib as pl
 def get_machines() -> list[tuple[str, list[set[int]], list[int]]]:
     content = []
     result: list[tuple[str, list[set[int]], list[int]]] = []
-    path = str(pl.Path(__file__).parent.resolve()) + "/data_tests.txt"
-    # path = str(pl.Path(__file__).parent.resolve()) + "/data.txt"
+    # path = str(pl.Path(__file__).parent.resolve()) + "/data_tests.txt"
+    path = str(pl.Path(__file__).parent.resolve()) + "/data.txt"
 
     with open(path, "r") as file:
         print(f"reading file contents of \"{path}\"")
@@ -24,9 +24,9 @@ def get_machines() -> list[tuple[str, list[set[int]], list[int]]]:
         result.append((lights, buttons, joltages))
     
     return result
+        
 
-
-def lights_after_button(lights: str, button: set[int]) -> str:
+def apply_button(lights: str, button: set[int]) -> str:
     result = ""
     for i in range(len(lights)):
         if i not in button: result+= lights[i]
@@ -34,52 +34,31 @@ def lights_after_button(lights: str, button: set[int]) -> str:
     return result
 
 
-def get_fewest_presses(lights_wanted: str, current_lights: str, buttons_remaining: list[set[int]]) -> int:
-    level = 0
-    if current_lights == lights_wanted:
-        return level
-    
-    level += 1
-    # first level
-    for button in buttons_remaining:
-        if lights_after_button(current_lights, button) == lights_wanted:
-            return level
-
-    level += 1        
-    # second level
-    for button in buttons_remaining:
-        if lights_after_button(current_lights, button) == lights_wanted:
-            return level
-
-
-def lights_match(lights: str, buttons_pressed: list[set[int]]) -> bool:
-    resulting_lights: str = ""
-    for i in range(len(lights)):
-        count = 0
-        for button in buttons_pressed:
-            count += 1 if i in button else 0
-        resulting_lights += "." if count % 2 == 0 else "#"
-    return lights == resulting_lights   
-
-
-def part_1():
+def new_idea():
     machines = get_machines()
+    total_presses = 0
     
     for machine in machines:
-        print(f"finding solution for {lights}")
-        lights, buttons, joltages = machine
-        current_lights = "".join(["." for x in range(len(lights))])
-        fewest_presses = get_fewest_presses(lights, current_lights, buttons)
-        for button in buttons:
-            lights_match()
-        print(f"number of button necessary: {fewest_presses}")
-        print()
+        lights, buttons, _ = machine
+        wanted_lights = lights
+        lights_possible = ["".join(["." for x in range(len(lights))])]
+        buttons_pressed = 0
+        while wanted_lights not in lights_possible:
+            buttons_pressed += 1
+            new_lights_possible = []
+            for lights in lights_possible:
+                for button in buttons:
+                    new_lights_possible.append(apply_button(lights, button))
+            lights_possible = new_lights_possible
+        total_presses += buttons_pressed
         
+
+    print(f"Part 1 result: {total_presses}")
 
 
 
 def main():
-    part_1()
+    new_idea()
 
 if __name__ == "__main__":
     main()
